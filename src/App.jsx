@@ -9,7 +9,7 @@ export default function App() {
       <Routes>
         <Route exact path="/login" element={<Login/>} />
         <Route exact path="/signup" element={<Signup/>} />
-        <Route exact path="/" element={<Netflix/>} />
+        <Route exact path="/netflix" element={<Netflix/>} />
 
         
       </Routes>
