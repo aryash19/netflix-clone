@@ -1,25 +1,50 @@
-import React from 'react';
-import styled from 'styled-components';
-import Backgroundimage from '../components/Backgroundimage';
-import Header from '../components/Header';
+import React,{useState} from "react";
+import styled from "styled-components";
+import Backgroundimage from "../components/Backgroundimage";
+import Header from "../components/Header";
+import "../index.css";
+import {createUserWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
+import {firebaseAuth} from "../utils/firebase-config"
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [formValues,setFormValues]=useState({
+    email:"",
+    password:"",
+  });
+  const navigate=useNavigate();
+  const handleSignIn = async()=>{
+    try {
+       const{email,password} =formValues;
+       await createUserWithEmailAndPassword(firebaseAuth,email,password)
+    } catch(err){
+      console.log(err)
+    }
+  };
+  onAuthStateChanged(firebaseAuth,(currentUser)=>{
+    if(currentUser) navigate("/")
+  })
   return (
-    <Container>
+    <Container showPassword={showPassword}>
     <Backgroundimage/>
     <div className="content">
-    <Header/>
-    <div className="body flex coloumn a-center j-center">
-    <div className="text flex coloumn">
-        <h1> unlimited movies , TV shows and more </h1>
+    <Header login />
+    <div className="body flex column a-center  j-between">
+    <div className="text flex column ">
+        <h1> Unlimited movies,TV shows and more </h1>
         <h4> Watch anywhere,Cancel anytime</h4>
         <h6> Ready to watch? Enter your email to create or restart membership</h6>
     </div>
     <div className="form">
-        <input type="email" placeholder="Email Address" name="email"/>
-        <input type="password" placeholder="Password" name="password"/>
-        <button>Get started</button>   </div>
-        <button>Login</button>
+        <input type="email" placeholder="Email Address" name="email" value={formValues.email} onChange={(e)=>setFormValues({...formValues,[e.target.name]:e.target.value})}/>
+        {showPassword &&(
+        <input type="password" placeholder="Password" name="password"  value={formValues.password} onChange={(e)=>setFormValues({...formValues,[e.target.name]:e.target.value})}/>)}
+        {
+          !showPassword &&(
+        
+        <button onClick={()=>setShowPassword(true)}>Get started</button> ) } </div>
+        <button onClick={handleSignIn}>Sign Up</button>
 
     </div>
     </div>
@@ -29,17 +54,65 @@ export default function Signup() {
   )
 }
 const  Container = styled.div`
-position:relative;
+position: relative;
 .content{
-    position:absolute;
-    top:0;
-    left:0;
+    position: absolute;
+    top: 0;
+    left: 0;
     background-color: rgba(0,0,0,0.5);
-    height:100vh;
-    width:100vw;
-    dispaly:grid;
+    height: 100vh;
+    width: 100vw;
+    display: grid;
     grid-template-rows: 15vh 85vh;
+    .body {
+      gap: 1rem;
+      .text{
+        gap: 1rem;
+        text-align: center;
+        font-size: 2rem;     
+        h1{
+          padding: 0 25rem;
+          } 
+        }
+     .form{
+      display: grid;
+      width: 60%;
+      margin:auto;
+      input{
+        color: black;
+        border: none;
+        grid-template-columns: ${({showPassword})=>showPassword ?"1fr 1fr":"2fr 1fr"};
+        padding: 1.5rem;
+        font-size: 1.2rem;
+        border: 1px solid black;
+        &:focus{
+          outline: none;
+        }
+         }
+         button{
+          padding: 0.5rem 1rem;
+          background-color: #e50914;
+          border:none;
+          cursor: pointer;
+          color: white;
+          font-weight: bolder;
+          font-size: 1.05rem;
+         }
+     }
+     button{
+      padding: 0.5rem 1rem;
+          background-color: #e50914;
+          border:none;
+          cursor: pointer;
+          color: white;
+          border-radius: 0.2rem;
+          font-weight: bolder;
+          font-size: 1.05rem;
+          width:20vw;
+          display: grid;
+          margin: auto;
 
-
+     }
+    }
 }
 `;
