@@ -64,7 +64,7 @@ export default function Navbar(isScrolled) {
 
 const Container=styled.div`
 .scrolled{
-  background-color: black;
+  background-color: transparent;
   
 }
 nav{
@@ -114,7 +114,7 @@ nav{
         outline: none;
        }
        svg{
-        color:#f34242;
+        color:#ffffff;
         font-size:1.2rem;
 
        }
